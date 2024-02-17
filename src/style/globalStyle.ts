@@ -3,13 +3,7 @@ import type { Styled } from "../model/style";
 
 /* About createGlobalStyle ---------------------------------------------- */
 export const GlobalStyled = sc.createGlobalStyle`
-  // 글꼴은 여기에 입력해주세요.
-  @font-face {
-    font-family: 'Giants-Inline';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/Giants-Inline.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
+
 
   // 전역 스타일링 리셋 CSS
   html, body, div, span,
@@ -25,8 +19,7 @@ export const GlobalStyled = sc.createGlobalStyle`
     text-decoration: none;
     font-size: 16px;
     color: rgb(29, 29, 31);
-    word-break: break-word;
-    line-height: 1.25;
+
     letter-spacing: -0.18px;
 }
 input[type="number"]::-webkit-outer-spin-button,
@@ -39,15 +32,17 @@ input[type="password"]::-ms-clear {
   display: none;
 }
 
+html, body, :root {height:100%}
+
   body {
     width: 100%;
-    height: 100%;
-    position:relative;
-
     // 전역글꼴 적용
     ${({ theme }) => theme.font.PretendardL}
-
   }
+  div { 
+    display: block; 
+  }
+ 
 `;
 
 /* About css styled ---------------------------------------------- */

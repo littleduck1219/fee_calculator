@@ -1,7 +1,15 @@
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
 export default function Header(): JSX.Element {
     return (
-        <div>
-            <div>헤더</div>
-        </div>
+        <Logo>
+            <Link to="/">통합요금계산기</Link>
+        </Logo>
     );
 }
+
+const Logo = styled.div`
+    padding:10px;
+    border-bottom: 1px solid black
+`;
