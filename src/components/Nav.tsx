@@ -2,17 +2,31 @@ import styled from "styled-components";
 import { cursor, Flex } from "../style/globalStyle";
 import type { Styled } from "../model/style";
 import { Link } from "react-router-dom";
+import { useContractModal } from "../hooks/useContractModal";
 
-export default function Nav() {
-    const navItems: string[] = ["전기요금", "수도요금"];
+interface NavProps {
+    hidden: boolean;
+}
+
+interface NavItemArray {
+    name: string;
+    path: string;
+}
+
+export default function Nav({ hidden }: NavProps) {
+    const navItems: NavItemArray[] = [
+        { name: "전기요금", path: "/calculator/electric" },
+        { name: "수도요금", path: "/calculator/water" },
+    ];
+
     return (
-        <NavContainer>
+        <NavContainer hidden={hidden}>
             <NavWrapper>
                 <NavItemContainer>
-                    {navItems.map((item: string, index: number) => (
-                        <Link to="/calculator/electric" key={index}>
+                    {navItems.map((item: NavItemArray, index: number) => (
+                        <Link to={item.path} key={index}>
                             <NavItemWrapper>
-                                <NavItem>{item}</NavItem>
+                                <NavItem>{item.name}</NavItem>
                             </NavItemWrapper>
                         </Link>
                     ))}
@@ -22,21 +36,23 @@ export default function Nav() {
     );
 }
 
-const NavContainer = styled.div`
+const NavContainer = styled.div<{ hidden: boolean }>`
     position: relative;
     z-index: 1111;
+    border-bottom: 1px solid ${(props) => props.theme.color.borderColor1};
+    margin-top: ${(props) => (props.hidden ? "-100px" : "0")};
+    transition: margin-top 0.3s; // 부드러운 전환 효과
 `;
 
 const NavWrapper = styled.div`
     max-width: 1256px;
     margin: 0 auto;
-    padding: 0 60px;
-    border-bottom: 1px solid black;
+    padding: 10px 60px;
+
 `;
 
 const NavItemContainer = styled.nav`
     margin: 0 auto;
-    width: 1300px;
     display: flex;
     justify-content: flex-start;
     gap: 1.5rem;
