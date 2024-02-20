@@ -35,7 +35,15 @@ const color = {
     green: "#00ff00",
     yellow: "#ffff00",
 
-    borderColor1: "#ab9190",
+    // border color
+    gray1: "#ab9190",
+    ligthWestar: "#E3E1D9",
+
+    // pastel color
+    mediumSlateBlue: "#7B66FF",
+    skyblue: "#5FBDFF",
+    anakiwa: "#96EFFF",
+    onahau: "#C5FFF8",
 };
 
 /* About theme ---------------------------------------------- */

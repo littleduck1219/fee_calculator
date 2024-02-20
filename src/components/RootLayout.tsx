@@ -30,8 +30,10 @@ export default function RootLayout(): JSX.Element {
 
     return (
         <>
-            <Header />
-            <Nav hidden={navHidden} />
+            <header style={{ display: "block" }}>
+                <Header />
+                <Nav />
+            </header>
             <SiteLayout>
                 <OutletWrapper>
                     <Outlet />
@@ -42,7 +44,6 @@ export default function RootLayout(): JSX.Element {
 }
 
 const SiteLayout = styled.div`
-    position: relative;
     width: 100%;
     height: 100%;
 `;
