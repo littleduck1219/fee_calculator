@@ -44,6 +44,8 @@ const color = {
     skyblue: "#5FBDFF",
     anakiwa: "#96EFFF",
     onahau: "#C5FFF8",
+    shark: "#25272C",
+    scampi: "#6962AD",
 };
 
 /* About theme ---------------------------------------------- */

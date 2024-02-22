@@ -57,7 +57,7 @@ const HeaderWrapper = styled.div`
 
 const Title = styled.h1`
     display: inline;
-    color: ${(props) => props.theme.color.mediumSlateBlue};
+    color: ${({ theme }) => `${theme.color.mediumSlateBlue}`};
     font-size: 2rem;
     font-weight: 700;
 `;

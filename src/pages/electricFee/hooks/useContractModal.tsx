@@ -7,7 +7,7 @@ interface StateContractModal {
 }
 
 export const useContractModal = create<StateContractModal>((set) => ({
-    isOpen: true,
+    isOpen: false,
     onOpen: () => {
         set({ isOpen: true });
     },

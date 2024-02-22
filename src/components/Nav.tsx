@@ -9,16 +9,18 @@ interface NavItemArray {
     path: string;
 }
 
-interface NavContainerStyleProps {
-    width: number,
-    show: boolean,
-    navHeight: number
+interface NavContainerProps {
+    width: number;
+    show: boolean;
+    scrollY: number;
+    navHeight: number;
+    lastScrollState: boolean;
 }
 
 export default function Nav() {
     const navHeight: number = 60;
     const [showNav, setShowNav] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const [lastScrollState, setLastScrollState] = useState(true);
     const [scrollY, setScrollY] = useState(0);
     const navItems: NavItemArray[] = [
         { name: "전기요금", path: "/calculator/electric" },
@@ -40,22 +42,38 @@ export default function Nav() {
         };
     }, []);
 
+
     const controlNavbar = () => {
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener("scroll", () => {
+            const direction = window.scrollY > lastScrollY ? "down" : "up";
+            lastScrollY = window.scrollY;
+
+            if (direction === "up") {
+                setLastScrollState(true);
+            } else {
+                setLastScrollState(false);
+            }
+        });
+
+
         setScrollY(window.scrollY);
         setShowNav(window.scrollY < lastScrollY || window.scrollY <= navHeight);
-        setLastScrollY(window.scrollY);
     };
+
 
     useEffect(() => {
         window.addEventListener("scroll", controlNavbar);
         return () => {
             window.removeEventListener("scroll", controlNavbar);
         };
-    }, [lastScrollY]); // `lastScrollY`에 의존하지 않는 것으로 수정
+    }, []);
 
     return (
-        <div style={{ height: "60px" }}>
-            <NavContainer width={windowWidth} show={showNav} scrollY={scrollY} navHeight={navHeight}>
+        <NavLayout scrollY={scrollY}>
+            <NavContainer width={windowWidth} show={showNav} scrollY={scrollY} navHeight={navHeight}
+                          lastScrollState={lastScrollState}>
                 <NavWrapper>
                     <div style={{ flex: "1 0 0px" }}>
                         <NavItemContainer>
@@ -70,16 +88,22 @@ export default function Nav() {
                     </div>
                 </NavWrapper>
             </NavContainer>
-        </div>
+        </NavLayout>
     );
 }
 
-const NavContainer = styled.div<{ width: number, show: boolean, scrollY: number, navHeight: number }>`
+const NavLayout = styled.div<{ scrollY: number }>`
+    height: ${({ scrollY }) => (scrollY > 0 && scrollY < 60 ? null : "60px")};`;
+
+const NavContainer = styled.div<NavContainerProps>`
     position: ${({ show, scrollY }) => (scrollY > 0 && scrollY < 60 && show ? "relative" : "fixed")};
     z-index: 111;
-    border-bottom: 1px solid ${(props) => props.theme.color.ligthWestar};
-    transition: top 0.5s ease 0s;
-    top: ${({ show, scrollY }) => (scrollY > 0 && scrollY < 60 && show ? "80px" : "-30px")};
+    border-bottom: ${({ theme }) => `1px solid ${theme.color.ligthWestar}`};
+    transition: ${({ scrollY }) => (scrollY > 60 ? "top 0.5s ease 0s" : null)};
+    top: ${({
+                scrollY,
+                lastScrollState,
+            }) => (scrollY > 0 && scrollY < 60 ? null : scrollY > 60 ? "20px" : lastScrollState ? "80px" : null)};
     background-color: white;
     width: ${({ width }) => `${width}px`};
 `;
@@ -97,19 +121,29 @@ const NavWrapper = styled.div`
 const NavItemContainer = styled.nav`
     display: flex;
     align-items: stretch;
+
 `;
 
 const NavItemWrapper = styled.div<Partial<Styled>>`
     ${Flex};
     ${cursor};
     padding: 0.5rem 1rem;
-    border: 1px solid black;
+    border: ${({ theme }) => `1px solid ${theme.color.mediumSlateBlue}`};
+    background-color: ${({ theme }) => `${theme.color.white}`};
+
     border-radius: 1.5rem;
     margin: 12px 6px;
+
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: ${({ theme }) => `${theme.color.mediumSlateBlue}`};
+        font-weight: 700;
+        box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    }
 `;
 
 const NavItem = styled.p`
     line-height: 1rem;
     position: relative;
-
 `;

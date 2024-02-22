@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootLayout from "./components/RootLayout";
-import ElectricFee from "./pages/ElectricFee";
-import Landing from "./pages/Landing";
-import WaterFee from "./pages/WaterFee";
+import ElectricFee from "./pages/electricFee/ElectricFee";
+import Landing from "./pages/landing/Landing";
+import WaterFee from "./pages/waterFee/WaterFee";
 import { GlobalStyled } from "./style/globalStyle";
 
 export default function App() {

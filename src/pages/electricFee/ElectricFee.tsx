@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Flex } from "../style/globalStyle";
+import { Flex, FlexBox } from "../../style/globalStyle";
 import { Calendar as CalendarButton, RotateCcw } from "lucide-react";
-import { useContractModal } from "../hooks/useContractModal";
-import type { Styled } from "../model/style";
-import { useOptionModal } from "../hooks/useOptionModal";
+import { useContractModal } from "./hooks/useContractModal";
+import type { Styled } from "../../model/style";
+import { useOptionModal } from "./hooks/useOptionModal";
 import Calendar from "react-calendar";
 
 interface ContractOptionProps extends Partial<Styled> {
@@ -41,56 +41,63 @@ export default function ElectricFee() {
         }
     };
 
-    useEffect(() => {
-        contractModal.onOpen();
-    }, []);
-
-
     return (
         <>
             <PageTitle>전기요금 계산기</PageTitle>
             <SectionContainer>
                 <LeftSectionWrapper>
                     <LeftSection>
-                        <ContentWrapper $fd="column" $ai="flex-start">
-                            <TitleWrapper $jc="space-between">
+                        <ContentContainer>
+                            <ContentWrapper>
                                 <Title>계약종별</Title>
-                                {contract && !contractModal.isOpen && (
-                                    <div onClick={contractModal.onOpen}>
-                                        <RotateCcw size={15} />
-                                    </div>
-                                )}
-                            </TitleWrapper>
-                            <ContractSelector $jc="space-between">
-                                <div>{contractModal.isOpen || contract}</div>
-                            </ContractSelector>
-                            {/* Contract 모달 */}
-                            <ContractOption
-                                isOpen={contractModal.isOpen}
-                                $fd="column"
-                            >
-                                {contractModal.isOpen &&
-                                    contractList.map((contract, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={handleContractSelect(
-                                                contract,
+
+                                <ContractContainer>
+                                    <ContractSelectOptionWrapper
+                                        hidden={!contractModal.isOpen}
+                                    >
+                                        {contractModal.isOpen &&
+                                            contractList.map(
+                                                (contract, index) => (
+                                                    <ContractSelectOption
+                                                        key={index}
+                                                        onClick={handleContractSelect(
+                                                            contract,
+                                                        )}
+                                                    >
+                                                        <p>{contract}</p>
+                                                    </ContractSelectOption>
+                                                ),
                                             )}
-                                        >
-                                            {contract}
-                                        </div>
-                                    ))}
-                            </ContractOption>
-                        </ContentWrapper>
-                        <OptionWrapper $fd="column" $ai="flex-start">
-                            <TitleWrapper $jc="flex-start">
+                                    </ContractSelectOptionWrapper>
+                                    <SelectorWrapper>
+                                        <ContractSelector>
+                                            <SelectContract
+                                                hidden={!contractModal.isOpen}
+                                            >
+                                                {`${contract} == "" ? "선택" : ${contract} :`}
+                                            </SelectContract>
+                                        </ContractSelector>
+                                        {contract && !contractModal.isOpen && (
+                                            <RotateCcwContainer
+                                                onClick={contractModal.onOpen}
+                                                hideIcon={!contract}
+                                            >
+                                                <RotateCcw size={15} />
+                                            </RotateCcwContainer>
+                                        )}
+                                    </SelectorWrapper>
+                                </ContractContainer>
+                            </ContentWrapper>
+                        </ContentContainer>
+                        <OptionWrapper>
+                            <ContentWrapper>
                                 <Title>조건선택</Title>
                                 {option && !optionModal.isOpen && (
                                     <div onClick={optionModal.onOpen}>
                                         <RotateCcw size={15} />
                                     </div>
                                 )}
-                            </TitleWrapper>
+                            </ContentWrapper>
                             <OptionSelector>
                                 <div style={{ width: "50%" }}>주거용</div>
                                 <div style={{ width: "50%" }}>비주거용</div>
@@ -115,7 +122,10 @@ export default function ElectricFee() {
                                 <CalendarButton />
                             </StartDate>
                             <div className="calendar-container">
-                                <Calendar onChange={handleDateChange} value={date} />
+                                <Calendar
+                                    onChange={handleDateChange}
+                                    value={date}
+                                />
                             </div>
                         </OptionWrapper>
                     </LeftSection>
@@ -129,8 +139,8 @@ export default function ElectricFee() {
 }
 
 
-const SectionContainer = styled.div<Partial<Styled>>`
-    ${Flex};
+const SectionContainer = styled.div`
+    display: flex;
     height: 100dvh;
     gap: 20px;
 `;
@@ -143,8 +153,8 @@ const PageTitle = styled.h2`
     padding: 20px 60px;
 `;
 
-
-const LeftSectionWrapper = styled.div<Partial<Styled>>`
+// LeftSection
+const LeftSectionWrapper = styled.div`
     flex: 1;
 `;
 
@@ -152,20 +162,9 @@ const LeftSection = styled.section`
     height: 100dvh;
 `;
 
-const RightSectionWrapper = styled.div<Partial<Styled>>`
-    ${Flex};
-    flex: 1;
-`;
-
-const RightSection = styled.section<Partial<Styled>>`
-    ${Flex};
-    width: 100%;
-    max-width: 500px;
-    height: 100dvh;
-`;
-
-const ContentWrapper = styled.div<Partial<Styled>>`
-    ${Flex};
+const ContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
     max-width: 500px;
     margin-bottom: 10px;
     border: 1px solid black;
@@ -179,8 +178,29 @@ const ContentWrapper = styled.div<Partial<Styled>>`
     }
 `;
 
-const TitleWrapper = styled.div<Partial<Styled>>`
-    ${Flex};
+const ContractSelectOptionWrapper = styled.div<{ hidden: boolean }>`
+    position: fixed;
+    top: 260px;
+    left: 350px;
+    display: ${({ hidden }) => (hidden ? "none" : "flex")};
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+    background: ${({ hidden, theme }) => hidden ? null : `${theme.color.scampi}`};
+    border-radius: 10px;
+    visibility: ${({ hidden }) => (hidden ? "hidden" : "visible")};
+    opacity: ${({ hidden }) => (hidden ? 0 : 1)};
+    transition: opacity 0.5s ease;
+    max-height: ${({ hidden }) => (hidden ? "0" : "auto")};
+    overflow: hidden;
+`;
+
+const ContractSelectOption = styled.div``;
+
+
+const ContentWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
     width: 100%;
 `;
 
@@ -191,16 +211,31 @@ const Title = styled.p`
     text-align: left;
     position: relative;
     height: 100%;
-    margin-bottom: 10px;
 `;
 
-const ContractSelector = styled.div<Partial<Styled>>`
-    ${Flex};
-    width: 100%;
+const ContractContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+const ContractSelector = styled.div`
+    display: flex;
+    align-items: flex-end;
+`;
+
+const SelectorWrapper = styled.div`
+    display: flex;
+    gap: 10px;
+`;
+
+const SelectContract = styled.div<{ hidden: boolean }>`
+    display: ${({ hidden }) => (hidden ? "none" : "flex")};
+    padding: 10px 20px;
+    background: ${({ hidden, theme }) => hidden ? null : `${theme.color.scampi}`};
+    border-radius: 20px;
 `;
 
 const ContractOption = styled.div<ContractOptionProps>`
-    ${Flex};
     opacity: 0;
     transform: translateY(-20px);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -210,8 +245,27 @@ const ContractOption = styled.div<ContractOptionProps>`
         transform: translateY(0);
     `}
 `;
-const OptionWrapper = styled.div<Partial<Styled>>`
-    ${Flex};
+
+const RotateCcwContainer = styled.div<{ hideIcon: boolean }>`
+    display: ${({ hideIcon }) => (hideIcon ? "none" : "flex")};
+    align-items: center;
+`;
+
+// RightSection
+const RightSectionWrapper = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const RightSection = styled.section`
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    height: 100dvh;
+`;
+
+
+const OptionWrapper = styled.div`
     max-width: 500px;
     margin-bottom: 10px;
     border: 1px solid black;
@@ -226,12 +280,10 @@ const OptionWrapper = styled.div<Partial<Styled>>`
 `;
 
 
-const OptionSelector = styled.div<Partial<Styled>>`
-    ${Flex};
+const OptionSelector = styled.div`
     width: 100%;
 `;
 
-const StartDate = styled.div<Partial<Styled>>`
-    ${Flex};
+const StartDate = styled.div`
     width: 100%;
 `;

@@ -8,12 +8,13 @@ export const GlobalStyled = createGlobalStyle`
     *, *::before, *::after {
         box-sizing: border-box;
         text-decoration: none;
-        color: #25272C; // shark
+        //color: #25272C; // shark
     }
 
     html, body, :root {
         height: 100%;
     }
+
 
     body {
         width: 100%;
