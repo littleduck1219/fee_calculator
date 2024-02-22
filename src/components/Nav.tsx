@@ -3,6 +3,7 @@ import { cursor, Flex } from "../style/globalStyle";
 import type { Styled } from "../model/style";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import useWindowWidth from "../hooks/useWindowWidth";
 
 interface NavItemArray {
     name: string;
@@ -26,22 +27,7 @@ export default function Nav() {
         { name: "전기요금", path: "/calculator/electric" },
         { name: "수도요금", path: "/calculator/water" },
     ];
-
-    // 브라우저 사이즈에 따른 넓이 지정
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
+    const { windowWidth } = useWindowWidth();
 
     const controlNavbar = () => {
         let lastScrollY = window.scrollY;
@@ -56,7 +42,6 @@ export default function Nav() {
                 setLastScrollState(false);
             }
         });
-
 
         setScrollY(window.scrollY);
         setShowNav(window.scrollY < lastScrollY || window.scrollY <= navHeight);

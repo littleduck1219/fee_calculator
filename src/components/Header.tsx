@@ -1,23 +1,12 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import type { Styled } from "../model/style";
 import { Flex } from "../style/globalStyle";
+import useWindowWidth from "../hooks/useWindowWidth";
 
 export default function Header(): JSX.Element {
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+    const { windowWidth } = useWindowWidth();
 
     return (
         <HeaderLayout>
