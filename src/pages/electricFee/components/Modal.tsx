@@ -1,7 +1,7 @@
 import useWindowWidth from "../../../hooks/useWindowWidth";
 import * as Style from "../style/ElectricFeeStyle";
 
-export default function UseModal({
+export default function Modal({
     content,
     hidden,
     handleContractSelect,
@@ -16,7 +16,7 @@ export default function UseModal({
         <>
             <Style.ContractSelectOptionWrapper
                 hidden={hidden}
-                windowWidth={windowWidth}
+                window={windowWidth}
             >
                 {/* 모달 */}
                 {content.map((contract, index) => (

@@ -10,7 +10,7 @@ export default function Header(): JSX.Element {
 
     return (
         <HeaderLayout>
-            <HeaderContainer width={windowWidth}>
+            <HeaderContainer style={{ width: `${windowWidth}px` }}>
                 <HeaderWrapper>
                     <Link to="/">
                         <Title>Billify</Title>
@@ -26,12 +26,11 @@ const HeaderLayout = styled.div`
     height: 81px;
 `;
 
-const HeaderContainer = styled.div<{ width: number }>`
+const HeaderContainer = styled.div`
     position: fixed;
     z-index: 1102;
     transition: top 0.1s ease 0s;
     top: 0;
-    width: ${({ width }) => `${width}px`};
     border-bottom: 1px solid ${(props) => props.theme.color.ligthWestar};
     background-color: white;
 `;

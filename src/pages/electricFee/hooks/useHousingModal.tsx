@@ -6,7 +6,7 @@ interface StateContractModal {
     onClose: () => void;
 }
 
-export const useOptionModal = create<StateContractModal>((set) => ({
+export const useHousingModal = create<StateContractModal>((set) => ({
     isOpen: true,
     onOpen: () => {
         set({ isOpen: true });

@@ -1,38 +1,24 @@
-import { Calendar as CalendarButton, RotateCcw } from "lucide-react";
+import { Calendar as CalendarButton } from "lucide-react";
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import useWindowWidth from "../../hooks/useWindowWidth";
-import UseModal from "./components/useModal";
-import { useContractModal } from "./hooks/useContractModal";
-import { useOptionModal } from "./hooks/useOptionModal";
+import { FlexBox } from "../../style/globalStyle";
+import ContractSection from "./components/ContractSection";
+import Modal from "./components/Modal";
+import { useHousingModal } from "./hooks/useHousingModal";
 import * as Style from "./style/ElectricFeeStyle";
 
 export default function ElectricFee() {
-    const [contract, setContract] = useState("");
     const [option, setOption] = useState("");
-    const [houseSelection, setHouseSelection] = useState("");
-    const contractModal = useContractModal();
-    const optionModal = useOptionModal();
+    const [houseSelection, setHouseSelection] = useState<null | boolean>(null);
+    const [familyDiscount, setFamilyDiscount] = useState("");
+    const housingModal = useHousingModal();
     const { windowWidth } = useWindowWidth();
-    const contractList: string[] = [
-        "주택용 저압",
-        "주택용 고압",
-        "일반용(갑)Ⅰ",
-        "일반용(갑)Ⅱ",
-        "일반용(을)",
-        "1주택 수 가구",
-        "교육용(갑)",
-        "교육용(을)",
-        "산업용(갑)Ⅰ",
-        "산업용(갑)Ⅱ",
-        "산업용(을)",
-        "임시(갑)",
-        "임시(을)",
-        "가로등(을)",
-        "심야전력(갑)",
-        "농사용(갑)",
-        "농사용(을)",
-    ];
+
+    const handleFamilyDiscountSelect = (contract: string) => () => {
+        setFamilyDiscount(familyDiscount);
+    };
+
     const familyDiscountList: string[] = [
         "해당없음",
         "5인이상 가구",
@@ -52,12 +38,6 @@ export default function ElectricFee() {
         "기초생활(주거, 교육)",
     ];
     const [date, setDate] = useState<Date | null>(null);
-
-    const handleContractSelect = (contract: string) => () => {
-        setContract(contract);
-        contractModal.onClose();
-        optionModal.onOpen();
-    };
 
     const handleOptionSelect = (option: string) => () => {};
 
@@ -80,41 +60,7 @@ export default function ElectricFee() {
             <Style.SectionContainer>
                 <Style.LeftSectionWrapper>
                     <Style.LeftSection>
-                        <Style.ContentContainer>
-                            <Style.ContentWrapper>
-                                <Style.Title>계약종별</Style.Title>
-                                <Style.ContractContainer>
-                                    {/* 모달 */}
-                                    <UseModal
-                                        content={contractList}
-                                        hidden={!contractModal.isOpen}
-                                        handleContractSelect={
-                                            handleContractSelect
-                                        }
-                                    />
-                                    <Style.SelectorWrapper>
-                                        <Style.ContractSelector>
-                                            <Style.SelectContract
-                                                hidden={contractModal.isOpen}
-                                                onClick={contractModal.onOpen}
-                                            >
-                                                {contract === ""
-                                                    ? "선택"
-                                                    : contract}
-                                            </Style.SelectContract>
-                                        </Style.ContractSelector>
-                                        {contract && !contractModal.isOpen && (
-                                            <Style.RotateCcwContainer
-                                                onClick={contractModal.onOpen}
-                                                hideIcon={!contract}
-                                            >
-                                                <RotateCcw size={15} />
-                                            </Style.RotateCcwContainer>
-                                        )}
-                                    </Style.SelectorWrapper>
-                                </Style.ContractContainer>
-                            </Style.ContentWrapper>
-                        </Style.ContentContainer>
+                        <ContractSection />
                         <Style.ContentContainer>
                             <Style.OptionWrapper>
                                 <Style.Title>조건선택</Style.Title>
@@ -123,28 +69,58 @@ export default function ElectricFee() {
                                         주거구분
                                     </Style.HousingTitle>
                                     <Style.OptionSelector>
-                                        <Style.HousingSelection>
+                                        <Style.HousingSelection
+                                            onClick={() => {
+                                                setHouseSelection(true);
+                                            }}
+                                            selected={houseSelection === true}
+                                        >
                                             <Style.Text>주거용</Style.Text>
                                         </Style.HousingSelection>
-                                        <Style.HousingSelection>
+                                        <Style.HousingSelection
+                                            onClick={() => {
+                                                setHouseSelection(false);
+                                            }}
+                                            selected={houseSelection === false}
+                                        >
                                             <Style.Text>비주거용</Style.Text>
                                         </Style.HousingSelection>
                                     </Style.OptionSelector>
                                 </div>
                             </Style.OptionWrapper>
                             <Style.ContractOption
-                                isOpen={optionModal.isOpen}
+                                open={housingModal.isOpen}
                                 $fd="column"
                             >
-                                {optionModal.isOpen &&
-                                    familyDiscountList.map((option, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={handleOptionSelect(option)}
-                                        >
-                                            {option}
-                                        </div>
-                                    ))}
+                                {houseSelection && housingModal.isOpen && (
+                                    <>
+                                        <FlexBox $jc="space-between">
+                                            <Style.HousingTitle>
+                                                대가족/생명유지장치 요금
+                                            </Style.HousingTitle>
+                                            <Style.ContractSelector>
+                                                <Style.SelectContract
+                                                    hidden={housingModal.isOpen}
+                                                    onClick={
+                                                        housingModal.onOpen
+                                                    }
+                                                >
+                                                    {familyDiscount === ""
+                                                        ? "선택"
+                                                        : familyDiscount}
+                                                </Style.SelectContract>
+                                            </Style.ContractSelector>
+                                        </FlexBox>
+
+                                        <Modal
+                                            content={familyDiscountList}
+                                            hidden={!housingModal.isOpen}
+                                            handleContractSelect={
+                                                handleFamilyDiscountSelect
+                                            }
+                                        />
+                                    </>
+                                )}
                             </Style.ContractOption>
                             <Style.StartDate>
                                 <div>시작날짜</div>

@@ -11,11 +11,9 @@ interface NavItemArray {
 }
 
 interface NavContainerProps {
-    width: number;
-    show: boolean;
-    scrollY: number;
-    navHeight: number;
-    lastScrollState: boolean;
+    scroll: number;
+    height: number;
+    scrollstate: boolean;
 }
 
 export default function Nav() {
@@ -56,9 +54,9 @@ export default function Nav() {
     }, []);
 
     return (
-        <NavLayout scrollY={scrollY}>
-            <NavContainer width={windowWidth} show={showNav} scrollY={scrollY} navHeight={navHeight}
-                          lastScrollState={lastScrollState}>
+        <NavLayout scroll={scrollY}>
+            <NavContainer style={{ width: `${windowWidth}px` }} scroll={scrollY} height={navHeight}
+                          scrollstate={lastScrollState}>
                 <NavWrapper>
                     <div style={{ flex: "1 0 0px" }}>
                         <NavItemContainer>
@@ -77,20 +75,19 @@ export default function Nav() {
     );
 }
 
-const NavLayout = styled.div<{ scrollY: number }>`
-    height: ${({ scrollY }) => (scrollY > 0 && scrollY < 60 ? null : "60px")};`;
+const NavLayout = styled.div<{ scroll: number }>`
+    height: ${({ scroll }) => (scroll > 0 && scroll < 60 ? null : "60px")};`;
 
 const NavContainer = styled.div<NavContainerProps>`
-    position: ${({ show, scrollY }) => (scrollY > 0 && scrollY < 60 && show ? "relative" : "fixed")};
+    position: ${({ scroll }) => (scroll > 0 && scroll < 60 ? "relative" : "fixed")};
     z-index: 111;
     border-bottom: ${({ theme }) => `1px solid ${theme.color.ligthWestar}`};
-    transition: ${({ scrollY }) => (scrollY > 60 ? "top 0.5s ease 0s" : null)};
-    top: ${({
-                scrollY,
-                lastScrollState,
-            }) => (scrollY > 0 && scrollY < 60 ? null : scrollY > 60 ? "20px" : lastScrollState ? "80px" : null)};
+    transition: ${({ scroll }) => (scroll > 60 ? "top 0.5s ease 0s" : null)};
+    top: ${({ scroll, scrollstate, height }) => {
+        if (scroll > height) return scrollstate ? "80px" : "-100px";
+        return "0";
+    }};
     background-color: white;
-    width: ${({ width }) => `${width}px`};
 `;
 
 

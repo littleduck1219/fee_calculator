@@ -44,10 +44,10 @@ export const ContentContainer = styled.div`
     }
 `;
 
-export const ContractSelectOptionWrapper = styled.div<{ hidden: boolean, windowWidth: number }>`
+export const ContractSelectOptionWrapper = styled.div<{ hidden: boolean, window: number }>`
     position: absolute;
     inset: 0 auto auto 0;
-    transform: ${({ windowWidth }) => `translate3d( ${windowWidth / 2.05 - 150}px, 250px, 0px)`};
+    transform: ${({ window }) => `translate3d( ${window / 2.05 - 150}px, 250px, 0px)`};
     display: ${({ hidden }) => (hidden ? "none" : "flex")};
     flex-direction: column;
     padding: 10px 5px;
@@ -114,14 +114,13 @@ export const ContractOption = styled.div<ContractOptionProps>`
     transform: translateY(-20px);
     transition: opacity 0.3s ease, transform 0.3s ease;
 
-    ${({ isOpen }) => isOpen && `
+    ${({ open }) => open && `
         opacity: 1;
         transform: translateY(0);
     `}
 `;
 
-export const RotateCcwContainer = styled.div<{ hideIcon: boolean }>`
-    display: ${({ hideIcon }) => (hideIcon ? "none" : "flex")};
+export const RotateCcwContainer = styled.div`
     align-items: center;
 `;
 
@@ -133,7 +132,7 @@ export const OptionSelector = styled.div`
     padding: 10px 30px;
 `;
 
-export const HousingSelection = styled.div`
+export const HousingSelection = styled.div<{ selected: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -143,7 +142,8 @@ export const HousingSelection = styled.div`
     border-radius: 20px;
     transition: background-color 0.3s ease;
     color: ${({ theme }) => theme.color.white};
-    background: ${({ hidden, theme }) => hidden ? null : `${theme.color.scampi}`};
+    background-color: ${({ selected, theme }) =>
+            selected ? theme.color.mediumSlateBlue : theme.color.scampi};
 
     &:hover {
         background-color: ${({ theme }) => theme.color.mediumSlateBlue};
